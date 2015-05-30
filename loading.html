@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" name="viewport">
+	<title>loading</title>
+	<style>
+		.loading {
+			position: absolute;
+			background-color: #ccc;
+			border-radius: 40px;
+			left: 50%;
+			top: 0;
+			margin-left: -20px;
+		}
+		.loading canvas {
+			display: block;
+		}
+	</style>
+</head>
+<body style="border: 1px solid #333;height: 700px;background: #fff;margin: 0">
+	<script src="./loading.js"></script>
+	<script>
+		var ajaxOjb = {
+			url: "http://localhost:8888/",
+			type: 'get',
+			data: '',
+			success: function() {
+				
+			},
+			error: function() {
+				alert('failed');
+			}
+		}
+		Loading(document.querySelector('html'),ajaxOjb);
+	</script>
+</body>
+</html>
