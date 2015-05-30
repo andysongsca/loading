@@ -12,12 +12,14 @@
 		context: null,//画板上下文
 		ea: 0,//弧线结束角度
 		sa: 0,//弧线开始角度
+		arcLength: 5*Math.PI/3,
 		size: {r: 40,width: 0,height: 0},//r圆弧直径,width/height 整体宽高
 		offset: {x: 0,y: 0,maxY: 85,realY: 0},//y:上下偏移量,maxY 最大偏移量 realY实时偏移量
 		self: Loading.prototype,
 		isAutoRunBack: false,//是否自动转动返回
 		isAutoRun: false,//是否转动
 		isAutoRunOut: false,//是否自动消失
+		animateID: null,//动画句柄
 		textDom: document.querySelector('.text'),
 		ajaxObj: null,
 
@@ -36,7 +38,7 @@
 			self.offset.y = -self.canvas.height;
 			self.size.width = self.canvas.width;
 			self.size.height = self.canvas.height;
-			self.loading.style.cssText = 	'position: absolute;background-color: #ccc;border-radius: 40px;left: 50%;top: 0;margin-left: -20px;'
+			self.loading.style.cssText = 	'position: absolute;border-radius: 40px;left: 50%;top: 0;margin-left: -20px;background-image: -webkit-radial-gradient(ellipse at right, rgb(220, 175, 200),rgb(0, 0, 75));background-image: radial-gradient(ellipse at right, rgb(220, 175, 200),rgb(0, 0, 75));'
 			self.loading.style.webkitTransform = 'translate3d(0,' + self.offset.y + 'px,0)';
 			self.loading.setAttribute('class','loading');
 			self.canvas.style.cssText = 'display: block;';
@@ -46,9 +48,9 @@
 
 		draw: function(startAngle,endAngle) {
 			var self = Loading.prototype,
-				showArrow = self.sa >= self.ea - 7*Math.PI/4 ? false : true;
+				showArrow = self.ea - self.arcLength >= self.sa ? true : false;
 			self.context.lineWidth = 6;
-			self.context.strokeStyle = '#1ba9ba';
+			self.context.strokeStyle = '#fff';
 
 			self.context.beginPath();
 			self.context.arc(self.canvas.width/2,self.canvas.height/2,self.size.r/2,startAngle,endAngle);
@@ -56,7 +58,7 @@
 			if (showArrow) {
 				self.context.beginPath();
 				self.context.lineWidth = 6;
-				self.context.strokeStyle = '#1ba9ba';
+				self.context.strokeStyle = '#fff';
 				self.context.moveTo(self.canvas.width/2+(self.size.r/2)*Math.cos(endAngle),self.canvas.height/2+(self.size.r/2)*Math.sin(endAngle));
 				self.context.lineTo(self.canvas.width/2+(self.size.r/2-2)*Math.cos(endAngle-0.1),self.canvas.height/2+(self.size.r/2-2)*Math.sin(endAngle-0.1));
 				self.context.lineTo(self.canvas.width/2+(self.size.r/2+2)*Math.cos(endAngle-0.1),self.canvas.height/2+(self.size.r/2+2)*Math.sin(endAngle-0.1));
@@ -67,45 +69,52 @@
 
 		update: function() {
 			var self = Loading.prototype;
-			var requestAnimationFrame = (function() {
-					return  window.requestAnimationFrame || 
-							window.mozRequestAnimationFrame || 
-							window.webkitRequestAnimationFrame || 
-							window.msRequestAnimationFrame || 
-							window.oRequestAnimationFrame || 
-							function(callback) { setTimeout(callback, 1000 / 60); };
-				}());
+			
 			if (self.isAutoRunBack) {
 				// self.ea += Math.PI/10;
-				// if (self.ea - self.sa > 9*Math.PI/5) {
-				// 	self.sa = self.ea - 9*Math.PI/5;
+				// if (self.ea - self.sa > self.arcLength) {
+				// 	self.sa = self.ea - self.arcLength;
 				// }
 				self.offset.realY = self.getRealOffset().top;
 
 				self.ea = self.ea < 0 ? 0 : (self.size.height + self.offset.realY)*Math.PI/60;
-				self.sa = self.ea - self.sa > 9*Math.PI/5 ? self.ea - 9*Math.PI/5 : self.sa;
+				self.sa = self.ea - self.sa > self.arcLength ? self.ea - self.arcLength : self.sa;
 				self.sa = self.ea > self.sa ? self.sa : self.ea;
 				
 			}else if (self.isAutoRun) {
-				self.ea += Math.PI/10;
-				self.sa = self.ea - self.sa > 9*Math.PI/5 ? self.ea - 9*Math.PI/5 : self.sa;
+				self.ea += Math.PI/20;
+				self.sa = self.ea - self.sa > self.arcLength ? self.ea - self.arcLength : self.sa;
 				if (self.ea >= 4*Math.PI) {
 
 				}
 			}else if (self.isAutoRunOut) {
-				self.ea += Math.PI/10;
-				if (self.ea - self.sa > 9*Math.PI/5) {
-					self.sa = self.ea - 9*Math.PI/5;
+				self.ea += Math.PI/20;
+				if (self.ea - self.sa > self.arcLength) {
+					self.sa = self.ea - self.arcLength;
 				}
 				self.loading.style.opacity = 0;
-				self.loading.style.transition = 'all 2s';
+				self.loading.style.transition = 'all .5s';
 
 			}
 
 			self.context.clearRect(0,0,self.canvas.width,self.canvas.height);
 			self.draw(self.sa,self.ea);
-			requestAnimationFrame(self.update);
+			self.animateID = self.requestAnimationFrame.call(window,self.update);
 		},
+
+		requestAnimationFrame: (function() {
+									return  window.requestAnimationFrame || 
+											window.mozRequestAnimationFrame || 
+											window.webkitRequestAnimationFrame || 
+											window.msRequestAnimationFrame || 
+											window.oRequestAnimationFrame || 
+											function(callback) { setTimeout(callback, 1000 / 60); };
+								}()),
+		cancelAnimationFrame: 	(function() {
+								return 	window.cancelAnimationFrame || 
+										window.webkitCancelAnimationFrame ||    // Webkit中此取消方法的名字变了
+                              			window.mozCancelRequestAnimationFrame
+                          		}()),
 
 		scrollScreen: function() {
 			var body = document.querySelector('body'),
@@ -113,6 +122,8 @@
 				startY,
 				self = Loading.prototype;
 			body.addEventListener('touchstart',function(e) {
+				// self.update();
+
 				self.loading.style.transition = '';
 				startX = e.touches[0].pageX;
 				startY = e.touches[0].pageY;
@@ -132,7 +143,7 @@
 					e.preventDefault();
 					self.loading.style.webkitTransform = 'translate3d(0,' + self.offset.y + 'px,0)';
 					self.ea =  self.ea < 0 ? 0 : (self.size.height + self.offset.y)*Math.PI/60;
-					self.sa = self.ea - self.sa > 9*Math.PI/5 ? self.ea - 9*Math.PI/5 : self.sa;
+					self.sa = self.ea - self.sa > self.arcLength ? self.ea - self.arcLength : self.sa;
 					self.sa = self.ea > self.sa ? self.sa : self.ea;
 					//透明度设置
 					self.loading.style.opacity = self.getOpacity();
@@ -149,9 +160,12 @@
 					self.isAutoRunBack = true;
 					setTimeout(function() {
 						self.isAutoRunBack = false;
+
 					},1000);
 				}else {
 					self.isAutoRun = true;
+					self.loading.style.webkitTransform = 'translate3d(0,60px,0)';
+					self.loading.style.transition = 'all 1s';
 					self.getData(self.ajaxObj);
 				}
 			});
@@ -243,9 +257,11 @@
 					},
 
 					handler: function() {
+						
 						if (xhr.readyState === 4) {
 							self.isAutoRunOut = true;
 							self.isAutoRun = false;
+							// setTimeout(function(){self.cancelAnimationFrame.call(window,self.animateID)},3000);
 							if (xhr.status === 200 || xhr.status/100 === 3) {
 								ajaxObj.success();
 							}else  {
