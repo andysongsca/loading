@@ -5,7 +5,7 @@
 	<meta content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" name="viewport">
 	<title>loading</title>
 	<style>
-		.loading {
+/*		.loading {
 			position: absolute;
 			background-color: #ccc;
 			border-radius: 40px;
@@ -15,7 +15,7 @@
 		}
 		.loading canvas {
 			display: block;
-		}
+		}*/
 	</style>
 </head>
 <body style="border: 1px solid #333;height: 700px;background: #fff;margin: 0">
@@ -26,7 +26,7 @@
 			type: 'get',
 			data: '',
 			success: function() {
-				
+				console.log('loading')
 			},
 			error: function() {
 				alert('failed');

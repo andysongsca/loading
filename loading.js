@@ -36,6 +36,7 @@
 			self.offset.y = -self.canvas.height;
 			self.size.width = self.canvas.width;
 			self.size.height = self.canvas.height;
+			self.loading.style.cssText = 	'position: absolute;background-color: #ccc;border-radius: 40px;left: 50%;top: 0;margin-left: -20px;'
 			self.loading.style.webkitTransform = 'translate3d(0,' + self.offset.y + 'px,0)';
 			self.loading.setAttribute('class','loading');
 			self.ajaxObj = ajaxObj;
@@ -80,14 +81,15 @@
 				// }
 				self.offset.realY = self.getRealOffset().top;
 
-				self.ea =  self.ea < 0 ? 0 : (self.size.height + self.offset.realY)*Math.PI/60;
+				self.ea = self.ea < 0 ? 0 : (self.size.height + self.offset.realY)*Math.PI/60;
 				self.sa = self.ea - self.sa > 9*Math.PI/5 ? self.ea - 9*Math.PI/5 : self.sa;
 				self.sa = self.ea > self.sa ? self.sa : self.ea;
 				
 			}else if (self.isAutoRun) {
 				self.ea += Math.PI/10;
-				if (self.ea - self.sa > 9*Math.PI/5) {
-					self.sa = self.ea - 9*Math.PI/5;
+				self.sa = self.ea - self.sa > 9*Math.PI/5 ? self.ea - 9*Math.PI/5 : self.sa;
+				if (self.ea >= 4*Math.PI) {
+
 				}
 			}else if (self.isAutoRunOut) {
 				self.ea += Math.PI/10;
@@ -133,7 +135,7 @@
 					self.sa = self.ea > self.sa ? self.sa : self.ea;
 					//透明度设置
 					self.loading.style.opacity = self.getOpacity();
-					console.log(self.offset.y);
+					// console.log(self.offset.y);
 				}
 			
 			});
