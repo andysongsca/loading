@@ -39,6 +39,7 @@
 			self.loading.style.cssText = 	'position: absolute;background-color: #ccc;border-radius: 40px;left: 50%;top: 0;margin-left: -20px;'
 			self.loading.style.webkitTransform = 'translate3d(0,' + self.offset.y + 'px,0)';
 			self.loading.setAttribute('class','loading');
+			self.canvas.style.cssText = 'display: block;';
 			self.ajaxObj = ajaxObj;
 			// self.loading.style.transition = 'all 1s';
 		},
