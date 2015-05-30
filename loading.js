@@ -246,14 +246,15 @@
 					get: function (url) {
 						xhr.open('get',url,true);
 						xhr.onreadystatechange = ajax.handler;
-						xhr.send(null);
+						xhr.send(ajax.setParams(ajaxObj.data));
 					},
 
 					post: function (url,content) {
 						xhr.open('post',url,true);
 						xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+						// xhr.setRequestHeader('Content-length', content.length);
 						xhr.onreadystatechange = ajax.handler;
-						xhr.send(ajax.setParams());
+						xhr.send(content);
 					},
 
 					handler: function() {
@@ -263,18 +264,18 @@
 							self.isAutoRun = false;
 							// setTimeout(function(){self.cancelAnimationFrame.call(window,self.animateID)},3000);
 							if (xhr.status === 200 || xhr.status/100 === 3) {
-								ajaxObj.success();
+								ajaxObj.success(xhr.responseText);
 							}else  {
-								ajaxObj.fail();
+								ajaxObj.fail(xhr.responseText);
 							}
 						}
 					}
 				},
 				xhr = ajax.createXHR();
 				if (ajaxObj.type === 'get') {
-					ajax.get(ajaxObj.url);
+					ajax.get(ajaxObj.url + '?' + ajax.setParams(ajaxObj.data));
 				}else {
-					ajax.post(ajaxObj.url,ajaxObj.data);
+					ajax.post(ajaxObj.url,ajax.setParams(ajaxObj.data));
 				}
 		}
 		

@@ -24,9 +24,11 @@
 		var ajaxOjb = {
 			url: "http://localhost:8888/",
 			type: 'get',
-			data: '',
-			success: function() {
-				console.log('loading')
+			data: {
+				callback: 'cb'
+			},
+			success: function(data) {
+				console.log(data);
 			},
 			error: function() {
 				alert('failed');
