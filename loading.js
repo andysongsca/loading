@@ -167,7 +167,7 @@
 				}else {
 					self.offset.y = -self.size.height;
 					self.isAutoRun = true;
-					self.loading.style.webkitTransform = 'translate3d(0,-60px,0)';
+					self.loading.style.webkitTransform = 'translate3d(0,60px,0)';
 					self.loading.style.transition = 'all 1s';
 					self.getData(self.ajaxObj);
 				}
