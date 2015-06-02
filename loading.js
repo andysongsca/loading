@@ -267,7 +267,7 @@
 							self.isAutoRun = false;
 							// setTimeout(function(){self.cancelAnimationFrame.call(window,self.animateID)},3000);
 							if (xhr.status === 200 || xhr.status/100 === 3) {
-								ajaxObj.success(xhr.responseText);
+								ajaxObj.success(JSON.parse(xhr.responseText));
 							}else  {
 								ajaxObj.error(xhr.responseText);
 							}
