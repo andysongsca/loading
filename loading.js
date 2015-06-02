@@ -1,13 +1,13 @@
 ;(function(){
 	function Loading(parentDom,ajaxObj) {
-		var self = Loading.prototype;
+		var self = this;
 		self.init(parentDom,ajaxObj);
 		self.update();
 		self.scrollScreen();
-	}
+	} 
 	Loading.prototype = {
 		constructor: Loading,
-		loading: null,//wrapper div
+		loading: null,//wrapper divH
 		canvas: null,//画板
 		context: null,//画板上下文
 		ea: 0,//弧线结束角度
@@ -24,7 +24,7 @@
 		ajaxObj: null,
 
 		init: function(parentDom,ajaxObj) {
-			var self = Loading.prototype;
+			var self = this;
 
 			self.loading = document.createElement('div');//canvas wrapper
 			self.canvas = document.createElement('canvas');//canvas
@@ -47,7 +47,7 @@
 		},
 
 		draw: function(startAngle,endAngle) {
-			var self = Loading.prototype,
+			var self = this,
 				showArrow = self.ea - self.arcLength >= self.sa ? true : false;
 			self.context.lineWidth = 6;
 			self.context.strokeStyle = '#fff';
@@ -68,7 +68,7 @@
 		},
 
 		update: function() {
-			var self = Loading.prototype;
+			var self = this;
 			
 			if (self.isAutoRunBack) {
 				// self.ea += Math.PI/10;
@@ -99,7 +99,7 @@
 
 			self.context.clearRect(0,0,self.canvas.width,self.canvas.height);
 			self.draw(self.sa,self.ea);
-			self.animateID = self.requestAnimationFrame.call(window,self.update);
+			self.animateID = requestAnimationFrame(self.update.bind(self));
 		},
 
 		requestAnimationFrame: (function() {
@@ -120,10 +120,10 @@
 			var body = document.querySelector('body'),
 				startX,
 				startY,
-				self = Loading.prototype;
+				self = this;
 			body.addEventListener('touchstart',function(e) {
 				// self.update();
-
+				console.log('touchstart')
 				self.loading.style.transition = '';
 				startX = e.touches[0].pageX;
 				startY = e.touches[0].pageY;
@@ -135,6 +135,7 @@
 			})
 			body.addEventListener('touchmove',function(e) {
 
+				console.log('touchmove')
 				self.offset.x = e.touches[0].pageX - startX;
 				self.offset.realY = e.touches[0].pageY - startY - self.size.height;
 				self.offset.y = self.offset.realY;
@@ -152,6 +153,7 @@
 			
 			});
 			body.addEventListener('touchend',function(e){
+				console.log('touchend' + self.offset.y)
 				if(self.offset.y < 60) {
 					self.offset.y = -self.size.height;
 					self.loading.style.webkitTransform = 'translate3d(0,' + self.offset.y + 'px,0)';
@@ -163,6 +165,7 @@
 
 					},1000);
 				}else {
+					self.offset.y = -self.size.height;
 					self.isAutoRun = true;
 					self.loading.style.webkitTransform = 'translate3d(0,60px,0)';
 					self.loading.style.transition = 'all 1s';
@@ -172,13 +175,13 @@
 		},
 
 		getOpacity: function() {
-			var self = Loading.prototype;
+			var self = this;
 
 			return (self.offset.realY+self.size.height)/(self.size.height+self.offset.maxY);
 		},
 
 		getRealOffset: function() {
-			var self = Loading.prototype;
+			var self = this;
 				// offsetReg=/\-?[0-9]+\.?[0-9]*/g;
 			
 			// return self.loading.style.webkitTransform.match(offsetReg);
@@ -186,7 +189,7 @@
 		},
 
 		getData: function(ajaxObj) {
-			var self = Loading.prototype,
+			var self = this,
 				srcObj = {
 					url: undefined,
 					data: null,
@@ -209,7 +212,7 @@
 
 		simpleAjax: function(ajaxObj) {
 			var 
-				self = Loading.prototype,
+				self = this,
 				ajax = {
 					createXHR: function() {
 						if (window.XMLHttpRequest) {
