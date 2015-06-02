@@ -271,8 +271,6 @@
 							}else  {
 								ajaxObj.error(xhr.responseText);
 							}
-						}else {
-							alert('error')
 						}
 					}
 				},
