@@ -195,7 +195,7 @@
 					data: null,
 					type: 'get',
 					success: function() {},
-					fail: function() {}
+					error: function() {}
 				}
 			self.extendObj(srcObj,ajaxObj);
 			self.simpleAjax(srcObj);
@@ -269,7 +269,7 @@
 							if (xhr.status === 200 || xhr.status/100 === 3) {
 								ajaxObj.success(xhr.responseText);
 							}else  {
-								ajaxObj.fail(xhr.responseText);
+								ajaxObj.error(xhr.responseText);
 							}
 						}else {
 							alert('error')
