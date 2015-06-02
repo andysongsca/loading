@@ -94,6 +94,7 @@
 				}
 				self.loading.style.opacity = 0;
 				self.loading.style.transition = 'all .5s';
+				self.loading.style.webkitTransform = 'translate3d(0,' + self.offset.y + 'px,0)';
 
 			}
 
