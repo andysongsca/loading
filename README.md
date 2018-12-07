@@ -2,6 +2,6 @@
 scroll down update datas  by canvas and ajax
 
 # js site:
-https://rawgit.com/yaomo/loading/master/loading.js
+https://cdn.jsdelivr.net/gh/yaomo/loading/loading.js
 
 ##you can include this js file by setting your script src to this site
